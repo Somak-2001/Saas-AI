@@ -4,7 +4,7 @@ export default function Home() {
   return (
     <div>
       <h1 className="text-xl text-green-600 m-5">This is landing page (Unprotected)</h1>
-      <div>
+      <div className='flex place-content-around w-48'>
         <Link href='/sign-in'>
           <Button>
             Log in
