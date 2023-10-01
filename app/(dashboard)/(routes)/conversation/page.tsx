@@ -13,6 +13,9 @@ import { useRouter } from "next/navigation";
 import { useState } from "react";
 import axios from 'axios';
 import { ChatCompletionRequestMessage } from "openai";
+import { cn } from "@/lib/utils";
+import BotAvatar from "@/components/BotAvatar";
+import UserAvatar from "@/components/UserAvatar";
 
 const Conversationpage = () => {
   const router = useRouter();
@@ -55,7 +58,11 @@ const Conversationpage = () => {
 
         } 
         catch (error: any) {
-          console.log(error);
+          if (axios.isAxiosError(error)) {
+            console.error('Axios Error:', error.response?.data || error.message);
+          } else {
+            console.error('Unexpected Error:', error.message);
+          }
         } 
         finally{
            router.refresh();
@@ -69,7 +76,7 @@ const Conversationpage = () => {
       description="Our most advanced conversation model"
       icon={MessageSquare}
       iconColor="text-violet-500"
-      bgColor="text-violet-500/10"/>
+      bgColor="bg-violet-500/10"/>
 
       <div className="px-4 lg:px-8">
         <Form {...form}>
@@ -110,8 +117,13 @@ const Conversationpage = () => {
       <div className="space-y-4 mt-4">
         <div className="flex flex-col-reverse gap-y-4">
           {messages.map((message)=>(
-            <div key={message.content}>
-              {message.content}
+            <div key={message.content}
+            className={cn('p-8 w-full flex items-start gap-x-8 rounded-lg',
+            message.role === 'user' ? "bg-white border border-black/10" : "bg-muted")}>
+              {message.role === 'user' ? <UserAvatar /> : <BotAvatar />}
+              <p className="text-sm">
+                {message.content}
+              </p>
             </div>
           ))}
         </div>
